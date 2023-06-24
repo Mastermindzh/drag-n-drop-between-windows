@@ -21,4 +21,5 @@ And if you know me at all... I'm always keen to show new cool stuff... so here's
 You can see the interactive demo here: [https://mastermindzh.github.io/drag-n-drop-between-windows/](https://mastermindzh.github.io/drag-n-drop-between-windows/)
 
 Or a video here:
-![A demo showing drag-n-drop between two windows](./demo.mp4)
+
+https://github.com/Mastermindzh/drag-n-drop-between-windows/assets/4190290/685e7838-6c40-4240-9904-d4b26b2117fe
