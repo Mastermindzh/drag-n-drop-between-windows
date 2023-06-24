@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Drag-n-drop between windows</title>
+    <style>
+        #dropzone {
+            border: dashed 2px gray;
+            margin: 20px;
+            width: 90%;
+            min-height: 700px;
+            overflow: scroll;
+        }
+
+        [draggable="true"]:hover {
+            opacity: 0.6;
+        }
+
+        [draggable="true"] {
+            cursor: move;
+            background-color: #acacac;
+            padding: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <p>
+            Open this page twice, click the "add random item" a few times and start
+            drag-n-dropping items between the two pages
+        </p>
+        <button id="add">Add random item</button>
+    </div>
+
+    <div id="dropzone"></div>
+
+    <script>
+        const dropzone = document.getElementById("dropzone");
+        const addButton = document.getElementById("add");
+        const draggableElements = document.querySelectorAll('[draggable="true"]');
+
+        let items = [];
+        dropzone.addEventListener("drop", handleDrop, false);
+        dropzone.addEventListener("dragover", handleDragOver, false);
+        addButton.addEventListener("click", () => {
+            items.push({ color: getRandomColor() });
+            rerenderItems();
+        });
+
+        getRandomColor = () => {
+            return Math.floor(Math.random() * 16777215).toString(16);
+        };
+
+        addItem = (item) => {
+            const child = document.createElement("div");
+            child.draggable = true;
+            child.style = `background-color: #${item.color};`;
+            child.setAttribute("data-color", item.color);
+            child.textContent = `#${item.color}`;
+            child.addEventListener("dragstart", handleDragStart, false);
+            child.addEventListener("dragend", handleDragEnd, false);
+            dropzone.appendChild(child);
+        };
+
+        rerenderItems = () => {
+            dropzone.innerHTML = "";
+            items.forEach(addItem);
+        };
+
+        function handleDragStart(event) {
+            console.info(`started dragging element`, event.target.dataset.color);
+            event.dataTransfer.setData(
+                "text/plain",
+                JSON.stringify(event.target.dataset)
+            );
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move";
+            return false;
+        }
+
+        function handleDrop(event) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            const item = JSON.parse(event.dataTransfer.getData("text/plain"));
+            items.push({ color: item.color });
+            rerenderItems();
+            return false;
+        }
+
+        function handleDragEnd(event) {
+            // we should probably check whether the item was added back to itself :)
+            console.info(
+                `stopped dragging element, removing from dom...`,
+                event.target.dataset.color
+            );
+            items = items.filter(
+                (item) => item.color !== event.target.dataset.color
+            );
+            rerenderItems();
+        }
+    </script>
+</body>
+
+</html>
