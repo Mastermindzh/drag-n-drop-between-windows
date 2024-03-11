@@ -69,10 +69,7 @@
             if (dropZone.imageOnly && (!item.image || item.image === "")) {
                 alert("This dropzone only allows cards with images");
             } else {
-                if (dropZone.id !== event.target.id) {
-                    console.log(dropZone.id, event.target.id)
-                    dropZone.items.push(item);
-                }
+                dropZone.items.push(item);
             }
 
             removeDraggablePreview();
@@ -82,17 +79,13 @@
 
         // create a handler for the "dragEnd" event on a specific zone
         const createDragEndHandler = (zone) => (event) => {
-            // if the zone is not the original zone where the item came from
-            if (zone.id != event.target.dataset["zoneid"]) {
-                console.info(
-                    `stopped dragging element, removing from dom...`,
-                    event.target.dataset.color
-                );
-                zone.items = zone.items.filter(
-                    (item) => item.color !== event.target.dataset.color
-                );
-                rerender();
-            }
+            console.info(
+                `stopped dragging element, removing from dom...`,
+                event.target.dataset.color
+            );
+            let idx = zone.items.findIndex(item => item.color === event.target.dataset.color);
+            zone.items.splice(idx, 1);
+            rerender();
         }
 
         // create a dom element for a dropZone
