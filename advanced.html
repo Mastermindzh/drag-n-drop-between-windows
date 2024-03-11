@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Drag-n-drop between windows</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div>
+        <p>
+            Open this page twice, add some drop zones, click the "add random item" a few times and
+            start drag-n-dropping items between the two pages.
+        </p>
+        <p>
+            Picture of cute dog: https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_960_720.jpg
+        </p>
+        <button id="addDropZone">Add drop zone</button>
+        <button id="addImageOnlyDropZone">Add image only dropzone (violet)</button>
+        <button id="add">Add random item</button>
+        <input id="title" type="text" placeholder="Add a title..." />
+        <input id="image" type="text" placeholder="Add a picture url" />
+    </div>
+    <div id="zones">
+
+    </div>
+
+    <script>
+
+        const addButton = document.getElementById("add");
+        const zones = document.getElementById("zones");
+        const titleInput = document.getElementById("title");
+        const imageInput = document.getElementById("image");
+        const addDropZoneButton = document.getElementById("addDropZone");
+        const draggableElements = document.querySelectorAll('[draggable="true"]');
+
+        const removeDraggablePreview = () => {
+            const dropZones = document.querySelectorAll(".dropZone");
+            dropZones.forEach(zone => {
+                zone.removeAttribute("data-drop-active");
+            })
+        }
+
+        // Add window drag events
+        addEventListener("dragover", (event) => {
+            const dropZones = document.querySelectorAll(".dropZone");
+            dropZones.forEach(zone => {
+                zone.setAttribute("data-drop-active", "true");
+            })
+        });
+        addEventListener("dragleave", removeDraggablePreview);
+        addEventListener("drop", removeDraggablePreview);
+
+        const dropZones = [
+            {
+                id: "dropzone",
+                items: []
+            }
+        ];
+
+
+
+        const createDropHandler = (dropZone) => (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+
+            const item = JSON.parse(event.dataTransfer.getData("text/plain"));
+            if (dropZone.imageOnly && (!item.image || item.image === "")) {
+                alert("This dropzone only allows cards with images");
+            } else {
+                if (dropZone.id !== event.target.id) {
+                    console.log(dropZone.id, event.target.id)
+                    dropZone.items.push(item);
+                }
+            }
+
+            removeDraggablePreview();
+            rerender();
+            return false;
+        }
+
+        // create a handler for the "dragEnd" event on a specific zone
+        const createDragEndHandler = (zone) => (event) => {
+            // if the zone is not the original zone where the item came from
+            if (zone.id != event.target.dataset["zoneid"]) {
+                console.info(
+                    `stopped dragging element, removing from dom...`,
+                    event.target.dataset.color
+                );
+                zone.items = zone.items.filter(
+                    (item) => item.color !== event.target.dataset.color
+                );
+                rerender();
+            }
+        }
+
+        // create a dom element for a dropZone
+        const createDomDropzone = (zone, imageOnly = false) => {
+            const dropZone = document.createElement("div");
+
+            const classes = ["dropZone"];
+            if (imageOnly) {
+                classes.push("imageOnly")
+            }
+            dropZone.setAttribute("class", classes.join(" "));
+            dropZone.setAttribute("id", zone.id);
+            dropZone.addEventListener("drop", createDropHandler(zone), false);
+            dropZone.addEventListener("dragover", handleDragOver, false);
+            zones.appendChild(dropZone);
+
+            return dropZone;
+        }
+
+        // draw the initial dropzone
+        const init = () => {
+            dropZones.forEach(zone => {
+                createDomDropzone(zone);
+            })
+        }
+
+        // add a dropzone and add it to the dom using createDomDropzone
+        const addDropzone = (event, imageOnly = false) => {
+            dropZones.push({ id: `dropZone-${dropZones.length + 1}`, items: [], imageOnly });
+            createDomDropzone(dropZones[dropZones.length - 1], imageOnly);
+        }
+
+        init();
+
+        addDropZoneButton.addEventListener("click", addDropzone);
+        addImageOnlyDropZone.addEventListener("click", (event) => {
+            addDropzone(event, true);
+        });
+        addButton.addEventListener("click", () => {
+            const currentTitle = titleInput.value ?? null;
+            const currentImage = imageInput.value ?? null;
+
+            dropZones[0] && dropZones[0].items.push({ title: currentTitle, color: getRandomColor(), image: currentImage, zoneId: dropZones[0].id })
+            rerender();
+        });
+
+        const getRandomColor = () => {
+            return Math.floor(Math.random() * 16777215).toString(16);
+        };
+
+        const addItem = (item, domZone, zone) => {
+            const child = document.createElement("div");
+            child.draggable = true;
+            child.setAttribute("class", "item");
+            child.style = `background-color: #${item.color};`;
+
+            // set data
+            Object.entries(item).forEach(([key, value]) => {
+                child.setAttribute(`data-${key}`, value);
+            });
+
+            // add title
+            const title = document.createElement("h1");
+            title.textContent = item.title !== "" ? item.title : "No title provided";
+            child.appendChild(title);
+
+            // add divider
+            const divider = document.createElement("hr");
+            child.appendChild(divider);
+
+            // add color text
+            const text = document.createElement("pr");
+            text.textContent = `#${item.color}`;
+            child.appendChild(text);
+
+            // add image
+            if (item.image !== "") {
+                const image = document.createElement("img");
+                image.src = item.image;
+                child.appendChild(image);
+            }
+
+            // add event listeners
+            child.addEventListener("dragstart", handleDragStart, false);
+            child.addEventListener("dragend", createDragEndHandler(zone), false);
+            domZone.appendChild(child);
+        };
+
+
+        const rerender = () => {
+            dropZones.forEach(zone => {
+                const currentZone = document.getElementById(zone.id);
+                if (currentZone) {
+                    currentZone.innerHTML = "";
+                    zone.items.forEach(item => {
+                        addItem(item, currentZone, zone)
+                    })
+                }
+            })
+        };
+
+
+        function handleDragStart(event) {
+            console.info(`started dragging element`, event.target.dataset.color);
+            event.dataTransfer.setData(
+                "text/plain",
+                JSON.stringify(event.target.dataset)
+            );
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move";
+            return false;
+        }
+
+    </script>
+</body>
+
+</html>

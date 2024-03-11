@@ -18,8 +18,12 @@ And if you know me at all... I'm always keen to show new cool stuff... so here's
 
 ## demo
 
-You can see the interactive demo here: [https://mastermindzh.github.io/drag-n-drop-between-windows/](https://mastermindzh.github.io/drag-n-drop-between-windows/)
+You can see the interactive demo here:
+
+- [Original version](https://mastermindzh.github.io/drag-n-drop-between-windows/)
+- [Multiple drop zones:](https://mastermindzh.github.io/drag-n-drop-between-windows/multizone.html)
+- [Advanced version with titles & images](https://mastermindzh.github.io/drag-n-drop-between-windows/advanced.html)
 
 Or a video here:
 
-https://github.com/Mastermindzh/drag-n-drop-between-windows/assets/4190290/685e7838-6c40-4240-9904-d4b26b2117fe
+<https://github.com/Mastermindzh/drag-n-drop-between-windows/assets/4190290/685e7838-6c40-4240-9904-d4b26b2117fe>

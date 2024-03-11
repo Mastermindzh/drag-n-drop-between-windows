@@ -1,0 +1,46 @@
+#zones {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.dropZone {
+  border: dashed 2px gray;
+  margin: 20px;
+  width: 400px;
+  min-height: 300px;
+  overflow: scroll;
+}
+
+[draggable="true"]:hover {
+  opacity: 0.6;
+}
+
+[draggable="true"] {
+  cursor: move;
+  background-color: #acacac;
+  padding: 10px;
+  margin: 10px;
+}
+
+.item {
+  word-wrap: anywhere;
+}
+
+.item h1 {
+  font-size: 15px;
+  font-weight: bold;
+}
+.item img {
+  margin-top: 5px;
+  max-width: 300px;
+  height: auto;
+}
+
+.imageOnly {
+  border-color: blueviolet;
+}
+
+[data-drop-active] {
+  border-color: goldenrod !important;
+}

@@ -4,26 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Drag-n-drop between windows</title>
-    <style>
-        #dropzone {
-            border: dashed 2px gray;
-            margin: 20px;
-            width: 90%;
-            min-height: 700px;
-            overflow: scroll;
-        }
-
-        [draggable="true"]:hover {
-            opacity: 0.6;
-        }
-
-        [draggable="true"] {
-            cursor: move;
-            background-color: #acacac;
-            padding: 10px;
-            margin: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -35,7 +16,7 @@
         <button id="add">Add random item</button>
     </div>
 
-    <div id="dropzone"></div>
+    <div id="dropzone" class="dropZone"></div>
 
     <script>
         const dropzone = document.getElementById("dropzone");

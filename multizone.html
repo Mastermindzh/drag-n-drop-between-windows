@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Drag-n-drop between windows</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div>
+        <p>
+            Open this page twice, add some drop zones, click the "add random item" a few times and
+            start
+            drag-n-dropping items between the two pages.
+        </p>
+        <button id="add">Add random item</button>
+        <button id="addDropZone">Add drop zone</button>
+    </div>
+    <div id="zones">
+
+    </div>
+
+    <script>
+
+        const addButton = document.getElementById("add");
+        const zones = document.getElementById("zones");
+        const addDropZoneButton = document.getElementById("addDropZone");
+        const draggableElements = document.querySelectorAll('[draggable="true"]');
+
+        const dropZones = [
+            {
+                id: "dropzone",
+                items: []
+            }
+        ]
+
+        const createDropHandler = (dropZone) => (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+
+            const item = JSON.parse(event.dataTransfer.getData("text/plain"));
+            dropZone.items.push({ color: item.color });
+            rerender();
+            return false;
+        }
+
+        const createDragEndHandler = (zone) => (event) => {
+            // we should probably check whether the item was added back to itself :)
+            console.info(
+                `stopped dragging element, removing from dom...`,
+                event.target.dataset.color
+            );
+            zone.items = zone.items.filter(
+                (item) => item.color !== event.target.dataset.color
+            );
+            rerender();
+        }
+
+        const createDomDropzone = (zone) => {
+            const dropZone = document.createElement("div");
+            dropZone.setAttribute("class", "dropZone");
+            dropZone.setAttribute("id", zone.id);
+            dropZone.addEventListener("drop", createDropHandler(zone), false);
+            dropZone.addEventListener("dragover", handleDragOver, false);
+            zones.appendChild(dropZone);
+
+            return dropZone;
+        }
+        const init = () => {
+            dropZones.forEach(zone => {
+                createDomDropzone(zone);
+            })
+        }
+
+        const addDropzone = () => {
+            dropZones.push({ id: `dropZone-${dropZones.length + 1}`, items: [] });
+            createDomDropzone(dropZones[dropZones.length - 1]);
+        }
+
+        init();
+
+        addDropZoneButton.addEventListener("click", addDropzone);
+
+        addButton.addEventListener("click", () => {
+            dropZones[0] && dropZones[0].items.push({ color: getRandomColor() })
+            rerender();
+        });
+
+        const getRandomColor = () => {
+            return Math.floor(Math.random() * 16777215).toString(16);
+        };
+
+        const addItem = (item, domZone, zone) => {
+            const child = document.createElement("div");
+            child.draggable = true;
+            child.style = `background-color: #${item.color};`;
+            child.setAttribute("data-color", item.color);
+            child.textContent = `#${item.color}`;
+            child.addEventListener("dragstart", handleDragStart, false);
+            child.addEventListener("dragend", createDragEndHandler(zone), false);
+            domZone.appendChild(child);
+        };
+
+
+        const rerender = () => {
+            dropZones.forEach(zone => {
+                const currentZone = document.getElementById(zone.id);
+                if (currentZone) {
+                    currentZone.innerHTML = "";
+                    zone.items.forEach(item => {
+                        addItem(item, currentZone, zone)
+                    })
+                }
+            })
+        };
+
+
+        function handleDragStart(event) {
+            console.info(`started dragging element`, event.target.dataset.color);
+            event.dataTransfer.setData(
+                "text/plain",
+                JSON.stringify(event.target.dataset)
+            );
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move";
+            return false;
+        }
+
+    </script>
+</body>
+
+</html>
