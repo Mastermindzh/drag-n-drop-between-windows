@@ -29,4 +29,4 @@ Or some example videos can be seen here:
 
 <https://github.com/Mastermindzh/drag-n-drop-between-windows/assets/4190290/685e7838-6c40-4240-9904-d4b26b2117fe>
 
-<https://github.com/Mastermindzh/drag-n-drop-between-windows/raw/main/assets/broadcast.mp4>
+<https://github.com/Mastermindzh/drag-n-drop-between-windows/assets/4190290/00e93e87-16ab-4512-9812-3bcd69843a00>
