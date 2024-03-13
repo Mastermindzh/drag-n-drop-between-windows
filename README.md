@@ -23,6 +23,7 @@ You can see the interactive demo here:
 - [Original version](https://mastermindzh.github.io/drag-n-drop-between-windows/)
 - [Multiple drop zones:](https://mastermindzh.github.io/drag-n-drop-between-windows/multizone.html)
 - [Advanced version with titles & images](https://mastermindzh.github.io/drag-n-drop-between-windows/advanced.html)
+- [Version where the dropzone that is available highlights, even in other windows (using broadcast channels)](https://mastermindzh.github.io/drag-n-drop-between-windows/frame-2-frame.html)
 
 Or a video here:
 
