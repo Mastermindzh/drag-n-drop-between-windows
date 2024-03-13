@@ -25,6 +25,8 @@ You can see the interactive demo here:
 - [Advanced version with titles & images](https://mastermindzh.github.io/drag-n-drop-between-windows/advanced.html)
 - [Version where the dropzone that is available highlights, even in other windows (using broadcast channels)](https://mastermindzh.github.io/drag-n-drop-between-windows/frame-2-frame.html)
 
-Or a video here:
+Or some example videos can be seen here:
 
 <https://github.com/Mastermindzh/drag-n-drop-between-windows/assets/4190290/685e7838-6c40-4240-9904-d4b26b2117fe>
+
+<https://github.com/Mastermindzh/drag-n-drop-between-windows/raw/main/assets/broadcast.mp4>
